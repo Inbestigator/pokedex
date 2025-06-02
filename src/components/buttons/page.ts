@@ -3,6 +3,7 @@ import { ps } from "../../state";
 import { MessageFlags } from "discord-api-types/v10";
 import { PokemonList } from "../../pages/list";
 import PokemonPage from "../../pages/pokemon";
+import SearchPage from "../../pages/search";
 
 export const pattern = ps`page-${""}-${"state:"}`;
 
@@ -24,6 +25,8 @@ export default async function page(
     case "p":
       components.push(await PokemonPage(state, prev));
       break;
+    case "s":
+      components.push(SearchPage(state.searchType, state.query));
   }
 
   await interaction.editReply({

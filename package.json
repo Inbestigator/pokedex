@@ -1,24 +1,22 @@
 {
   "name": "pokedex",
-  "module": "index.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "preview": "bun preview.ts",
+    "dev": "bun dev.ts",
     "register": "bun run build -r && bun start",
     "start": "bun .dressed",
-    "build": "dressed build -e /bot -p 3000"
+    "build": "dressed build"
   },
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.8.3"
+    "@types/bun": "latest",
+    "typescript": "^5.8.3",
+    "discord-api-types": "^0.38.9"
   },
   "dependencies": {
-    "discord-api-types": "^0.38.8",
+    "@dressed/next": "^1.1.0",
     "dressed": "^1.7.1",
-    "inquirer": "^12.6.3",
+    "fuse.js": "^7.1.0",
     "pokenode-ts": "^1.20.0"
   }
 }

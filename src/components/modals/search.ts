@@ -1,21 +1,17 @@
 import { type ModalSubmitInteraction } from "dressed";
-import { ps } from "../../state";
 import { MessageFlags } from "discord-api-types/v10";
 import SearchPage, { searchTypes } from "../../pages/search";
 
-export const pattern = ps`search-${""}-:type(${searchTypes.join("|")})`;
+export const pattern = `search-:type(${searchTypes.join("|")})`;
 
 export default async function search(
   interaction: ModalSubmitInteraction,
-  args: { prev: string; type: (typeof searchTypes)[number] },
+  args: { type: (typeof searchTypes)[number] }
 ) {
-  const prev = ps(args.prev);
   const query = interaction.getField("query", true);
 
-  await interaction.deferUpdate();
-
-  await interaction.editReply({
+  await interaction.update({
     flags: MessageFlags.IsComponentsV2,
-    components: [await SearchPage(prev, args.type, query)],
+    components: [SearchPage(args.type, query)],
   });
 }

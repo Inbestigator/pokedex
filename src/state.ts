@@ -12,6 +12,8 @@ interface ListState {
 
 interface SearchState {
   type: "s";
+  query: string;
+  searchType: (typeof searchTypes)[number];
 }
 
 export type State<T extends "p" | "l" | "s" = "p" | "l" | "s"> = T extends "p"
@@ -25,13 +27,7 @@ export type History = State[];
 /**
  * Stateful patterns
  *
- * @example
- * ps`my-button-${""}`
- * // "my-button-:prev((data-...|list-...|search):-?\d+)"
- * ps`my-button-${{ type: "data-pokemon", id: 1 }}`
- * // "my-button-data-pokemon:1"
- * ps("data-pokemon:1")
- * // { type: "data-pokemon", id: 1 }
+ * Create, encode, decode states into dynamic id patterns
  */
 export function ps<T extends string | TemplateStringsArray, S extends boolean = false>(
   ...args: [pattern: T, ...values: ("" | History | unknown)[]] | [T, S?]
@@ -51,7 +47,7 @@ export function ps<T extends string | TemplateStringsArray, S extends boolean = 
             result += encodeState(value);
           }
         } else if ((typeof value === "string" && value.endsWith(":")) || value === "") {
-          result += `:${value.slice(0, -1) || "prev"}((:?(p|l|s)-?[0-9a-z]+)+)`;
+          result += `:${value.slice(0, -1) || "prev"}((:?(p|l|s)-?[0-9a-zA-Z\s]+)+)`;
         } else {
           result += values[i];
         }
@@ -65,8 +61,8 @@ export function ps<T extends string | TemplateStringsArray, S extends boolean = 
   throw new Error("Invalid pattern state", { cause: args });
 }
 
-function encodeHistory(states: State[]): string {
-  return states.map(encodeState).slice(-18).join(":");
+function encodeHistory(history: History): string {
+  return history.slice(-13).map(encodeState).join(":");
 }
 
 function encodeState(state: State): string {
@@ -76,17 +72,18 @@ function encodeState(state: State): string {
     case "l":
       return `l${state.offset.toString(36)}`;
     case "s":
-      return "s";
+      return `s${state.searchType === "pokemon" ? 1 : 0}${state.query}`;
   }
 }
 
-function decodeHistory(encoded: string): State[] {
-  return encoded.split(":").map(decodeState);
+function decodeHistory(encoded: string): History {
+  const decoded = encoded.split(":").map(decodeState);
+  return decoded.length ? decoded : [{ type: "l", offset: 0 }];
 }
 
 function decodeState(encoded: string): State {
   const [type, ...hex] = encoded.split("");
-  const num = parseInt(hex.join(""), 16);
+  const num = parseInt(hex.join(""), 36);
 
   switch (type) {
     case "p":
@@ -94,7 +91,8 @@ function decodeState(encoded: string): State {
     case "l":
       return { type, offset: num };
     case "s":
-      return { type };
+      const [searchType, ...query] = hex;
+      return { type, query: query.join(""), searchType: searchType ? "pokemon" : "species" };
   }
 
   throw new Error(`Invalid state type: ${type}`);

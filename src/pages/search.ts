@@ -1,30 +1,29 @@
 import { Button, SelectMenu, SelectMenuOption, TextDisplay } from "dressed";
-import { ps, type History, type State } from "../state";
+import { ps, type History } from "../state";
 import DexPage from "./dex";
-import { capitalize } from "../client";
+import { capitalize, format } from "../client";
+import { search } from "../search";
+import { SectionList } from "./list";
+import { pokemonImage } from "../images";
 
-export const searchTypes = [
-  "set",
-  "pokemon",
-  "species",
-  "move",
-  "ability",
-  "item",
-  "type",
-] as const;
+export const searchTypes = ["set", "pokemon", "species"] as const;
 
-export default async function SearchPage(
-  history: History,
-  type: (typeof searchTypes)[number],
-  query: string
-) {
+export default function SearchPage(type: (typeof searchTypes)[number], query: string) {
+  if (type === "set") type = "species";
+
+  const results = search(query, type).map((r) => ({
+    ...r.item,
+    name: format(r.item.name),
+    image: pokemonImage(r.item.id, "small"),
+  }));
+  const history: History = [{ type: "s", query, searchType: type }]; // History doesn't have a back button, and it's longer than standard, so safe to override
+
   return DexPage({
-    children: [TextDisplay(`## Results for '${query}'`)],
-    history,
+    children: [TextDisplay(`## Results for '${query}'`), ...SectionList(results, history)],
     hideSearchButton: true,
     inputs: [
       SelectMenu({
-        custom_id: ps`type-search-${history}-set:${query}`,
+        custom_id: ps`type-search-set:${query}`,
         type: "String",
         placeholder: "Select a type",
         options: searchTypes.slice(1).map((t) =>
@@ -34,9 +33,9 @@ export default async function SearchPage(
         ),
       }),
       Button({
-        custom_id: ps`search-${history}-${type}:${query}`,
+        custom_id: ps`search-${type}:${query}`,
         emoji: { name: "🔍" },
-        label: "Change query",
+        label: "Edit query",
         style: "Secondary",
       }),
     ],

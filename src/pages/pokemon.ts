@@ -7,11 +7,9 @@ import type { ChainLink } from "pokenode-ts";
 import type { APIButtonComponent } from "discord-api-types/v10";
 
 export default async function PokemonPage(state: State<"p">, history: History) {
-  const [pokemon, species] = await Promise.all([
-    pokedex.pokemon.getPokemonById(state.id),
-    pokedex.pokemon.getPokemonSpeciesById(state.id),
-  ]);
-
+  // I really want to stream this / update as more data comes back, future problems...
+  const pokemon = await pokedex.pokemon.getPokemonById(state.id);
+  const species = await pokedex.pokemon.getPokemonSpeciesById(urlToId(pokemon.species.url));
   const evolutionChain = await pokedex.evolution.getEvolutionChainById(
     urlToId(species.evolution_chain.url)
   );
@@ -24,20 +22,26 @@ export default async function PokemonPage(state: State<"p">, history: History) {
     history.pop();
   }
 
+  const abilities = pokemon.abilities
+    .filter((a) => !a.is_hidden)
+    .map((a) => namedToData(a.ability).formattedName);
+  const longestAbility = Math.max(8, ...abilities.map((a) => a.length));
+  const types = pokemon.types.map((t) => namedToData(t.type).formattedName);
+
   return DexPage({
     children: [
       MediaGallery(MediaGalleryItem(pokemonImage(pokemon.id, "large"))),
-      TextDisplay(`## ${capitalize(pokemon.name)}`),
+      TextDisplay(`## ${format(pokemon.name)}`),
       TextDisplay(`### Information`),
       TextDisplay(
-        `\`\`\`ansi\n[1;2m[0;2m[1;2mHeight:[0m[0m  [1;2m[0;2m[1;2mWeight:[0m[0m\n${convert(pokemon.height, "dm", "ft")
+        `\`\`\`ansi\n[1;2m[0;2m[1;2mHeight:  Weight:[0m[0m\n${convert(pokemon.height, "dm", "ft")
           .toFixed(2)
           .split(".", 2)
           .map((n, i) => `${n}${"'".repeat(i + 1)}`)
           .join(" ")}  ${convert(pokemon.weight, "hg", "lb").toFixed(
           1
-        )} lbs\n\n[1;2m[0;2m[1;2mAbilities:[0m[0m\n${pokemon.abilities
-          .map((t) => `• ${format(t.ability.name)}`)
+        )} lbs\n\n[1;2m[0;2m[1;2m${"Abilities:".padEnd(longestAbility + 2)}  Type:[0m[0m\n${abilities
+          .map((a, i) => `• ${a.padEnd(longestAbility)}  ${i === 0 ? types.join(", ") : ""}`)
           .join("\n")}\n\`\`\``
       ),
       ...(evolutions.length > 1
@@ -47,7 +51,6 @@ export default async function PokemonPage(state: State<"p">, history: History) {
           ]
         : []),
     ],
-    history,
     inputs: [
       [
         Button({
@@ -62,11 +65,11 @@ export default async function PokemonPage(state: State<"p">, history: History) {
 
 function EvolveBranch(link: ChainLink, history: History): APIButtonComponent[] {
   const { id } = namedToData(link.species);
-  const sliced = (history.toReversed().slice(0, 2) as State<"p">[]).map((h) => h.id);
+  const curr = history.at(-1) as State<"p">;
 
   return [
     Button({
-      disabled: sliced.includes(id),
+      disabled: curr.id === id,
       custom_id: ps`page-${history}-${{ type: "p", id }}`,
       label: format(link.species.name),
       style: "Secondary",

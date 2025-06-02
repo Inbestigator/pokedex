@@ -13,9 +13,12 @@ export function capitalize(str: string): string {
 const weightUnits = ["hg", "lb"] as const;
 const lengthUnits = ["dm", "ft"] as const;
 
-export function convert<
-  T extends (typeof weightUnits)[number] | (typeof lengthUnits)[number],
->(input: number, from: T, to: T): number {
+/** Horror */
+export function convert<T extends (typeof weightUnits)[number] | (typeof lengthUnits)[number]>(
+  input: number,
+  from: T,
+  to: T
+): number {
   const weightConversion = { hg: 1, lb: 0.220462 } as Record<T, number>;
   const lengthConversion = { dm: 1, ft: 0.328084 } as Record<T, number>;
 
@@ -40,7 +43,7 @@ export function namedToData(data: NamedAPIResource) {
     name: data.name,
     url: data.url,
     id: urlToId(data.url),
-    capitalizedName: capitalize(data.name),
+    formattedName: format(data.name),
   };
 }
 
