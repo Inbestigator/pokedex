@@ -1,8 +1,9 @@
 import { handleRequest, setupCommands, setupComponents, setupEvents } from "dressed/server";
 import build from "dressed/build";
 import { watch } from "node:fs";
+import config from "./dressed.config";
 
-const endpoint = "/api/bot";
+const endpoint = "/bot";
 const server = Bun.serve({ routes: { [endpoint]: () => new Response(null) } });
 
 async function reload() {
@@ -11,7 +12,7 @@ async function reload() {
 
   server.reload({
     routes: {
-      "/bot": async (req) => {
+      [endpoint]: async (req) => {
         return handleRequest(
           req,
           setupCommands(
@@ -31,7 +32,8 @@ async function reload() {
               ...e,
               run: async (...p) => (await import(`./${e.path}${cacheBuster}`)).default(...p),
             }))
-          )
+          ),
+          config
         );
       },
     },
