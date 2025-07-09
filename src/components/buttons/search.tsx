@@ -12,9 +12,14 @@ export default async function search(
   )
 ) {
   if (args.type === "set" && interaction.data.component_type === ComponentType.StringSelect) {
-    return interaction.update(
-      <SearchPage type={interaction.data.values[0] as typeof args.type} query={args.query} />
-    );
+    await interaction.deferUpdate();
+    const res = SearchPage({
+      type: interaction.data.values[0] as typeof args.type,
+      query: args.query,
+    });
+    for await (const view of res) {
+      await interaction.editReply(view);
+    }
   }
 
   return interaction.showModal(

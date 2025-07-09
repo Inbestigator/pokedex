@@ -6,7 +6,7 @@ import { pokemonImage } from "../images";
 import type { APIUnfurledMediaItem } from "discord-api-types/v10";
 import { Fragment } from "react";
 
-interface Option {
+export interface Option {
   image: string | APIUnfurledMediaItem;
   id: number;
   name: string;

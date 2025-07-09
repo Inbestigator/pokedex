@@ -47,7 +47,7 @@ export function ps<T extends string | TemplateStringsArray, S extends boolean = 
             result += encodeState(value);
           }
         } else if ((typeof value === "string" && value.endsWith(":")) || value === "") {
-          result += `:${value.slice(0, -1) || "prev"}((:?(p|l|s)-?[0-9a-zA-Z\\s]+)+)`;
+          result += `:${value.slice(0, -1) || "prev"}((:?(p|l|s)[0-9a-zA-Z\\s]+)+)`;
         } else {
           result += values[i];
         }

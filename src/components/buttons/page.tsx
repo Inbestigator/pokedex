@@ -15,17 +15,15 @@ export default async function page(
   const state = ps(args.state, true);
   const history = ps(args.prev);
   history.push(state);
-  if (state.type === "p") {
-    const res = PokemonPage({ ...state, history });
+  if (state.type !== "l") {
+    const res =
+      state.type === "p"
+        ? PokemonPage({ ...state, history })
+        : SearchPage({ type: state.searchType, query: state.query });
     for await (const view of res) {
-      interaction.editReply(view);
+      await interaction.editReply(view);
     }
     return;
   }
-  await interaction.editReply(
-    <>
-      {state.type === "l" && (await PokemonList({ ...state, history }))}
-      {state.type === "s" && <SearchPage type={state.searchType} query={state.query} />}
-    </>
-  );
+  await interaction.editReply(await PokemonList({ ...state, history }));
 }
