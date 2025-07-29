@@ -1,4 +1,4 @@
-import { handleRequest, setupCommands, setupComponents, setupEvents } from "dressed/server";
+import { handleRequest } from "dressed/server";
 import build from "dressed/build";
 import { watch } from "node:fs";
 import config from "./dressed.config";
@@ -15,22 +15,22 @@ async function reload() {
       [endpoint]: async (req) => {
         return handleRequest(
           req,
-          setupCommands(
-            commands.map((c) => ({
+          await Promise.all(
+            commands.map(async (c) => ({
               ...c,
-              run: async (...p) => (await import(`./${c.path}${cacheBuster}`)).default(...p),
+              exports: await import(`./${c.path}${cacheBuster}`),
             }))
           ),
-          setupComponents(
-            components.map((c) => ({
+          await Promise.all(
+            components.map(async (c) => ({
               ...c,
-              run: async (...p) => (await import(`./${c.path}${cacheBuster}`)).default(...p),
+              exports: await import(`./${c.path}${cacheBuster}`),
             }))
           ),
-          setupEvents(
-            events.map((e) => ({
+          await Promise.all(
+            events.map(async (e) => ({
               ...e,
-              run: async (...p) => (await import(`./${e.path}${cacheBuster}`)).default(...p),
+              exports: await import(`./${e.path}${cacheBuster}`),
             }))
           ),
           config
