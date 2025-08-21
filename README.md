@@ -4,9 +4,7 @@ This is a fairly advanced bot made using [Dressed](https://dressed.vercel.app). 
 
 It features a state/history system built into the buttons, so your data is persisted.
 
-This project is also a test of a more "React-like" system, so views are componentized and stored in `src/pages`
-
-> I'm working on a possible addon lib, likely `@dressed/react` or `@dressed/jsx`, which will probably be used here if completed.
+This project is also an example of using `@dressed/react` to construct messages.
 
 ## Commands
 
