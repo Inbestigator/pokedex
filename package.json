@@ -23,9 +23,8 @@
   },
   "overrides": {
     "@dressed/react": {
-      "peerDependencies": {
-        "dressed": "*"
-      }
+      "dressed": "1.10.0-canary.8.4",
+      "react-reconciler": "npm:@dressed/react-reconciler"
     }
   }
 }
