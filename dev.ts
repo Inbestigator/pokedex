@@ -1,45 +1,33 @@
-import { handleRequest } from "dressed/server";
-import build from "dressed/build";
 import { watch } from "node:fs";
-import config from "./dressed.config";
+import type { Server } from "node:http";
+import { $ } from "bun";
+import { createServer } from "dressed/server";
 
-const endpoint = "/bot";
-const server = Bun.serve({ routes: { [endpoint]: () => new Response(null) } });
+let currentServer: Server | undefined;
+
+async function close() {
+  await new Promise((r) => currentServer!.close(() => r({})));
+  currentServer = undefined;
+}
 
 async function reload() {
-  const { commands, components, events } = await build();
-  const cacheBuster = `?t=${Date.now()}`;
+  if (currentServer) await close();
 
-  server.reload({
-    routes: {
-      [endpoint]: async (req) => {
-        return handleRequest(
-          req,
-          await Promise.all(
-            commands.map(async (c) => ({
-              ...c,
-              exports: await import(`./${c.path}${cacheBuster}`),
-            }))
-          ),
-          await Promise.all(
-            components.map(async (c) => ({
-              ...c,
-              exports: await import(`./${c.path}${cacheBuster}`),
-            }))
-          ),
-          await Promise.all(
-            events.map(async (e) => ({
-              ...e,
-              exports: await import(`./${e.path}${cacheBuster}`),
-            }))
-          ),
-          config
-        );
-      },
-    },
-    port: 3000,
-  });
-  console.info("Bot listening at", new URL(endpoint, server.url).href);
+  try {
+    console.time("Build");
+    await $`bun run --bun dressed build`.quiet();
+    console.time("Build");
+
+    const { commands, components, events, config } = await import(
+      `./.dressed/index.mjs?t=${Date.now()}`
+    );
+
+    if (currentServer) {
+      await close();
+    }
+
+    currentServer = createServer(commands, components, events, config);
+  } catch {}
 }
 
 reload();
@@ -48,8 +36,6 @@ const watcher = watch("./src", { recursive: true }, reload);
 
 process.on("SIGINT", async () => {
   watcher.close();
-  if (server) {
-    await server.stop();
-  }
+  if (currentServer) currentServer.close();
   process.exit(0);
 });
