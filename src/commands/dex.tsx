@@ -24,8 +24,8 @@ export async function autocomplete(interaction: CommandAutocompleteInteraction) 
   if (!query) return interaction.sendChoices([]);
   await interaction.sendChoices(
     await Promise.all(
-      search(String(query), "pokemon").map(async (name) => {
-        const pokemon = await pokedex.pokemon.getPokemonByName(name.item);
+      search(String(query), "species").map(async (name) => {
+        const pokemon = await pokedex.pokemon.getPokemonSpeciesByName(name.item);
         return { name: format(pokemon.name), value: pokemon.id };
       })
     )

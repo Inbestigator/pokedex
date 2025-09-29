@@ -5,7 +5,7 @@
       "name": "pokedex",
       "dependencies": {
         "@dressed/react": "^1.5.0",
-        "dressed": "^1.10.0-canary.8.4",
+        "dressed": "^1.10.0-canary.9",
         "fuse.js": "^7.1.0",
         "pokenode-ts": "^1.20.0",
         "react": "^19.1.1",
@@ -13,7 +13,7 @@
       "devDependencies": {
         "@types/bun": "latest",
         "@types/react": "^19.1.14",
-        "discord-api-types": "^0.38.26",
+        "discord-api-types": "^0.38.26-next.93decca.1758147813",
         "typescript": "^5.9.2",
       },
     },
@@ -105,11 +105,11 @@
 
     "delayed-stream": ["delayed-stream@1.0.0", "", {}, "sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ=="],
 
-    "discord-api-types": ["discord-api-types@0.38.26", "", {}, "sha512-xpmPviHjIJ6dFu1eNwNDIGQ3N6qmPUUYFVAx/YZ64h7ZgPkTcKjnciD8bZe8Vbeji7yS5uYljyciunpq0J5NSw=="],
+    "discord-api-types": ["discord-api-types@0.38.26-next.93decca.1758147813", "", {}, "sha512-G2+3c8rPWzxlisIK/7G4ZF40iAhgXJSxMNFDHpNW2+tN57kaPM9d+TJgTqBOwOTrFjUBEzNNyno0CN9wxI5UoQ=="],
 
     "dotenv": ["dotenv@17.2.2", "", {}, "sha512-Sf2LSQP+bOlhKWWyhFsn0UsfdK/kCWRv1iuA2gXAwt3dyNabr6QSj00I2V10pidqz69soatm9ZwZvpQMTIOd5Q=="],
 
-    "dressed": ["dressed@1.10.0-canary.8.4", "", { "dependencies": { "@dressed/matcher": "^1.4.0", "commander": "^14.0.1", "discord-api-types": "^0.38.25", "dotenv": "^17.2.2", "enquirer": "^2.4.1", "esbuild": "^0.25.9", "walk-it": "^6.0.1" }, "bin": { "dressed": "dist/bin/dressed.js" } }, "sha512-w6VGdXrst3DDpjHyUeZM6tlWT9WuEAVFnYjOVLF0S5kwMny3Ee1B4WupJdNpyHQLmdVTaiG6WksMtAXEj0VjiA=="],
+    "dressed": ["dressed@1.10.0-canary.9", "", { "dependencies": { "@dressed/matcher": "^1.4.0", "commander": "^14.0.1", "discord-api-types": "^0.38.26-next.93decca.1758147813", "dotenv": "^17.2.2", "enquirer": "^2.4.1", "esbuild": "^0.25.9", "walk-it": "^6.0.1" }, "bin": { "dressed": "dist/bin/dressed.js" } }, "sha512-Zj5lEjEfrDAdjlYkybxs6PrHuMas2ewDH8Gl8t5oXgbFVRV1mxR4zIGR4vTwxFKcymZJ/+KlW3TB6rJs6r0ikA=="],
 
     "dunder-proto": ["dunder-proto@1.0.1", "", { "dependencies": { "call-bind-apply-helpers": "^1.0.1", "es-errors": "^1.3.0", "gopd": "^1.2.0" } }, "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A=="],
 
@@ -172,5 +172,9 @@
     "undici-types": ["undici-types@7.8.0", "", {}, "sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw=="],
 
     "walk-it": ["walk-it@6.0.1", "", {}, "sha512-SnGNBYJps1vKqSW6bLKSYHD8RoFr89IdZPYi5BHcg9BP0rA29l7/6tzQGkBHmIuC+VXOhw/+O6hL7XK4NR7Cmg=="],
+
+    "@dressed/react/discord-api-types": ["discord-api-types@0.38.26", "", {}, "sha512-xpmPviHjIJ6dFu1eNwNDIGQ3N6qmPUUYFVAx/YZ64h7ZgPkTcKjnciD8bZe8Vbeji7yS5uYljyciunpq0J5NSw=="],
+
+    "dressed/discord-api-types": ["discord-api-types@0.38.26", "", {}, "sha512-xpmPviHjIJ6dFu1eNwNDIGQ3N6qmPUUYFVAx/YZ64h7ZgPkTcKjnciD8bZe8Vbeji7yS5uYljyciunpq0J5NSw=="],
   }
 }

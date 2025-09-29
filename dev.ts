@@ -1,33 +1,28 @@
 import { watch } from "node:fs";
 import type { Server } from "node:http";
+import { argv, exit } from "node:process";
 import { $ } from "bun";
 import { createServer } from "dressed/server";
 
 let currentServer: Server | undefined;
 
 async function close() {
-  await new Promise((r) => currentServer!.close(() => r({})));
+  await new Promise((r) => currentServer?.close(r) ?? r(0));
   currentServer = undefined;
 }
 
 async function reload() {
-  if (currentServer) await close();
-
   try {
-    console.time("Build");
-    await $`bun run --bun dressed build`.quiet();
-    console.time("Build");
-
+    await $`bun run --bun dressed build ${argv.slice(2)}`.quiet();
     const { commands, components, events, config } = await import(
       `./.dressed/index.mjs?t=${Date.now()}`
     );
-
-    if (currentServer) {
-      await close();
-    }
-
+    await close();
     currentServer = createServer(commands, components, events, config);
-  } catch {}
+  } catch (e) {
+    console.error(e);
+    await close();
+  }
 }
 
 reload();
@@ -36,6 +31,6 @@ const watcher = watch("./src", { recursive: true }, reload);
 
 process.on("SIGINT", async () => {
   watcher.close();
-  if (currentServer) currentServer.close();
-  process.exit(0);
+  await close();
+  exit();
 });

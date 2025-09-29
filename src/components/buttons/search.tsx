@@ -1,6 +1,11 @@
-import { ActionRow, TextInput, type MessageComponentInteraction } from "@dressed/react";
-import SearchPage, { searchTypes } from "../../pages/search";
-import { ComponentType } from "discord-api-types/v10";
+import {
+  Label,
+  SelectMenu,
+  SelectMenuOption,
+  TextInput,
+  type MessageComponentInteraction,
+} from "@dressed/react";
+import { searchTypes } from "../../pages/search";
 
 export const pattern = `search{-:type(${searchTypes.join("|")})::query}`;
 
@@ -11,31 +16,27 @@ export default async function search(
     | { type: undefined; query: undefined }
   )
 ) {
-  if (args.type === "set" && interaction.data.component_type === ComponentType.StringSelect) {
-    await interaction.deferUpdate();
-    const res = SearchPage({
-      type: interaction.data.values[0] as typeof args.type,
-      query: args.query,
-    });
-    for await (const view of res) {
-      await interaction.editReply(view);
-    }
-  }
-
   return interaction.showModal(
-    <ActionRow>
-      <TextInput
-        custom_id="query"
-        label="Query"
-        required
-        value={args.query}
-        max_length={32}
-        min_length={3}
-      />
-    </ActionRow>,
+    <>
+      <Label label="Query">
+        <TextInput custom_id="query" value={args.query} max_length={32} min_length={3} required />
+      </Label>
+      <Label label="Type">
+        <SelectMenu type="String" custom_id="type">
+          {searchTypes.map((t) => (
+            <SelectMenuOption
+              key={t}
+              default={t === (args.type ?? "species")}
+              label={t[0]?.toUpperCase() + t.slice(1)}
+              value={t}
+            />
+          ))}
+        </SelectMenu>
+      </Label>
+    </>,
     {
-      title: args.query ? "Edit query" : "Search",
-      custom_id: `search-${args.type ?? "species"}`,
+      title: args.query ? "Edit search" : "Search",
+      custom_id: "search",
     }
   );
 }
