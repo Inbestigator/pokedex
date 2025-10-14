@@ -1,36 +1,20 @@
-import { watch } from "node:fs";
-import type { Server } from "node:http";
-import { argv, exit } from "node:process";
-import { $ } from "bun";
+import build, { parseCommands, parseComponents, parseEvents } from "dressed/build";
 import { createServer } from "dressed/server";
+import config from "./dressed.config.ts";
 
-let currentServer: Server | undefined;
-
-async function close() {
-  await new Promise((r) => currentServer?.close(r) ?? r(0));
-  currentServer = undefined;
-}
-
-async function reload() {
-  try {
-    await $`bun run --bun dressed build ${argv.slice(2)}`.quiet();
-    const { commands, components, events, config } = await import(
-      `./.dressed/index.mjs?t=${Date.now()}`
-    );
-    await close();
-    currentServer = createServer(commands, components, events, config);
-  } catch (e) {
-    console.error(e);
-    await close();
-  }
-}
-
-reload();
-
-const watcher = watch("./src", { recursive: true }, reload);
-
-process.on("SIGINT", async () => {
-  watcher.close();
-  await close();
-  exit();
+await build(config, {
+  bundle: async (entry, outdir) => {
+    await Bun.build({
+      entrypoints: [entry],
+      outdir,
+      naming: `[dir]/[name].mjs`,
+      minify: true,
+      target: "bun",
+      packages: "external",
+    });
+  },
 });
+
+const { commands, components, events } = await import("./.dressed/tmp/entries.ts");
+
+createServer(parseCommands(commands), parseComponents(components), parseEvents(events), config);

@@ -3,28 +3,22 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun dev.ts",
+    "dev": "bun --watch --bun dev.ts",
     "register": "bun run build -r && bun start",
-    "start": "bun .dressed",
-    "build": "dressed build"
+    "start": "bun --bun .dressed",
+    "build": "bun --bun dressed build"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/react": "^19.1.14",
-    "discord-api-types": "^0.38.26-next.93decca.1758147813",
-    "typescript": "^5.9.2"
+    "@types/react": "^19.2.2",
+    "discord-api-types": "^0.38.30",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@dressed/react": "^1.5.0",
-    "dressed": "^1.10.0-canary.9",
+    "@dressed/react": "^1.6.0-rc.1",
+    "dressed": "^1.10.0-rc.2",
     "fuse.js": "^7.1.0",
     "pokenode-ts": "^1.20.0",
-    "react": "^19.1.1"
-  },
-  "overrides": {
-    "@dressed/react": {
-      "dressed": "1.10.0-canary.8.4",
-      "react-reconciler": "npm:@dressed/react-reconciler"
-    }
+    "react": "^19.2.0"
   }
 }
