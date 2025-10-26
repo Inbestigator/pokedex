@@ -57,7 +57,7 @@ You can try editing a page by modifying `src/pages/list.ts`.
 
 ## Deploying
 
-When you're ready, this bot is intended to be deployed on [Vercel](https://vercel.com)
+When you're ready, you can try to deploying the bot. See [the deploying guides](https://dressed.js.org/docs/guide/deploying) for more information.
 
 You can check out
 [the GitHub repository](https://github.com/inbestigator/dressed) - your feedback
