@@ -1,10 +1,6 @@
 import type { APIUnfurledMediaItem } from "discord-api-types/v10";
 
-export const resizedImage = (
-  url: string,
-  width: number,
-  height?: number,
-): APIUnfurledMediaItem => ({
+export const resizedImage = (url: string, width: number, height?: number): APIUnfurledMediaItem => ({
   url: `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${width}${height ? `&h=${height}` : ""}`,
   width,
   height: height ?? width,

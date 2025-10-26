@@ -1,5 +1,5 @@
-import { pokedex } from "./src/client";
 import { writeFileSync } from "node:fs";
+import { pokedex } from "./src/client";
 
 const { results: pokemons } = await pokedex.pokemon.listPokemons(0, 100000);
 const { results: species } = await pokedex.pokemon.listPokemonSpecies(0, 100000);

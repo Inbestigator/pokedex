@@ -6,17 +6,18 @@
     "dev": "bun --watch --bun dev.ts",
     "register": "bun run build -r && bun start",
     "start": "bun --bun .dressed",
-    "build": "bun --bun dressed build"
+    "build": "bun --bun dressed build",
+    "checks": "tsc --noEmit && bun --bun biome check --write"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^19.2.2",
-    "discord-api-types": "^0.38.30",
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@dressed/react": "^1.6.0-rc.1",
-    "dressed": "^1.10.0-rc.2",
+    "@biomejs/biome": "^2.3.0",
+    "@dressed/react": "^1.6.0",
+    "dressed": "^1.10.0",
     "fuse.js": "^7.1.0",
     "pokenode-ts": "^1.20.0",
     "react": "^19.2.0"

@@ -1,9 +1,9 @@
 import { ActionRow, Button, MediaGallery, MediaGalleryItem, TextDisplay } from "@dressed/react";
-import { convert, format, namedToData, pokedex, urlToId } from "../client";
-import { ps, type History, type State } from "../state";
-import DexPage from "./dex";
-import { pokemonImage } from "../images";
 import type { ChainLink, EvolutionChain, Pokemon } from "pokenode-ts";
+import { convert, format, namedToData, pokedex, urlToId } from "../client";
+import { pokemonImage } from "../images";
+import { type History, ps, type State } from "../state";
+import DexPage from "./dex";
 
 function DataDisplay({
   history,
@@ -29,6 +29,7 @@ function DataDisplay({
       inputs={[
         [
           <Button
+            key="return"
             custom_id={ps`page-${history.slice(0, -1)}-${prev}`}
             emoji={{ name: "↩️" }}
             style="Secondary"
@@ -51,9 +52,7 @@ ${convert(pokemon.height, "dm", "ft")
   .join(" ")}  ${convert(pokemon.weight, "hg", "lb").toFixed(1)} lbs
 
 [1;2m[0;2m[1;2m${"Abilities:".padEnd(longestAbility + 2)}  Type:[0m[0m
-${abilities
-  .map((a, i) => `• ${a.padEnd(longestAbility)}  ${i === 0 ? types.join(", ") : ""}`)
-  .join("\n")}
+${abilities.map((a, i) => `• ${a.padEnd(longestAbility)}  ${i === 0 ? types.join(", ") : ""}`).join("\n")}
 \`\`\``}
       {evolutionChain && evolutionChain.chain.evolves_to.length > 0 && (
         <>
@@ -80,24 +79,16 @@ export async function* PokemonPage({
     history.pop();
   }
 
-  const abilities = pokemon.abilities
-    .filter((a) => !a.is_hidden)
-    .map((a) => namedToData(a.ability).formattedName);
+  const abilities = pokemon.abilities.filter((a) => !a.is_hidden).map((a) => namedToData(a.ability).formattedName);
   const longestAbility = Math.max(8, ...abilities.map((a) => a.length));
   const types = pokemon.types.map((t) => namedToData(t.type).formattedName);
 
   yield <DataDisplay {...{ abilities, history, longestAbility, pokemon, types, prev }} isLoading />;
 
   const species = await pokedex.pokemon.getPokemonSpeciesById(urlToId(pokemon.species.url));
-  const evolutionChain = await pokedex.evolution.getEvolutionChainById(
-    urlToId(species.evolution_chain.url)
-  );
+  const evolutionChain = await pokedex.evolution.getEvolutionChainById(urlToId(species.evolution_chain.url));
 
-  yield (
-    <DataDisplay
-      {...{ abilities, history, longestAbility, pokemon, types, evolutionChain, prev }}
-    />
-  );
+  yield <DataDisplay {...{ abilities, history, longestAbility, pokemon, types, evolutionChain, prev }} />;
 }
 
 function flattenEvolutionChain(link: ChainLink): ChainLink[] {
@@ -105,7 +96,7 @@ function flattenEvolutionChain(link: ChainLink): ChainLink[] {
   const queue: ChainLink[] = [link];
 
   while (queue.length > 0) {
-    const current = queue.shift()!;
+    const current = queue.shift() as ChainLink;
     result.push(current);
     queue.push(...current.evolves_to);
   }
@@ -118,7 +109,7 @@ function EvolveChain({ root, history }: { root: ChainLink; history: History }) {
   const curr = history.at(-1) as State<"p">;
 
   return chunk(flatChain, 5).map((group, i) => (
-    <ActionRow key={i}>
+    <ActionRow key={i.toString()}>
       {group.map((link) => {
         const { id } = namedToData(link.species);
         return (

@@ -1,10 +1,10 @@
-import { Button, MediaGallery, MediaGalleryItem, TextDisplay, Section } from "@dressed/react";
-import { namedToData, pokedex } from "../client";
-import { ps, type History, type State } from "../state";
-import DexPage from "./dex";
-import { pokemonImage } from "../images";
+import { Button, MediaGallery, MediaGalleryItem, Section, TextDisplay } from "@dressed/react";
 import type { APIUnfurledMediaItem } from "discord-api-types/v10";
 import { Fragment } from "react";
+import { namedToData, pokedex } from "../client";
+import { pokemonImage } from "../images";
+import { type History, ps, type State } from "../state";
+import DexPage from "./dex";
 
 export interface Option {
   image: string | APIUnfurledMediaItem;
@@ -28,12 +28,14 @@ export async function PokemonList({ history, ...state }: State<"l"> & { history:
       inputs={[
         [
           <Button
+            key="back"
             custom_id={ps`page-${history}-${{ type: state.type, offset: state.offset - 5 }}`}
             emoji={{ name: "⬅️" }}
             style="Secondary"
             disabled={!pokemon.previous}
           />,
           <Button
+            key="forward"
             custom_id={ps`page-${history}-${{ type: state.type, offset: state.offset + 5 }}`}
             emoji={{ name: "➡️" }}
             style="Secondary"
@@ -55,13 +57,7 @@ export function SectionList({ history, options }: { options: Option[]; history: 
         <MediaGalleryItem media={image} />
       </MediaGallery>
       <Section
-        accessory={
-          <Button
-            custom_id={ps`page-${history}-${{ type: "p", id }}`}
-            label="Info"
-            style="Secondary"
-          />
-        }
+        accessory={<Button custom_id={ps`page-${history}-${{ type: "p", id }}`} label="Info" style="Secondary" />}
       >
         <TextDisplay>### {name}</TextDisplay>
       </Section>

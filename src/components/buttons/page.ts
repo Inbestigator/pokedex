@@ -1,16 +1,13 @@
 import type { Params } from "@dressed/matcher";
-import { ps } from "../../state";
+import type { MessageComponentInteraction } from "@dressed/react";
 import { PokemonList } from "../../pages/list";
 import { PokemonPage } from "../../pages/pokemon";
 import SearchPage from "../../pages/search";
-import type { MessageComponentInteraction } from "@dressed/react";
+import { ps } from "../../state";
 
 export const pattern = ps`page-${""}-${"state:"}`;
 
-export default async function page(
-  interaction: MessageComponentInteraction,
-  args: Params<"page-:prev-:state">
-) {
+export default async function page(interaction: MessageComponentInteraction, args: Params<"page-:prev-:state">) {
   await interaction.deferUpdate();
   const state = ps(args.state, true);
   const history = ps(args.prev);

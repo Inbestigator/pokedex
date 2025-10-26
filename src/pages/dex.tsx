@@ -1,6 +1,5 @@
 import { ActionRow, Button, Container, Separator } from "@dressed/react";
-import React from "react";
-import { Fragment, type ReactNode } from "react";
+import React, { Fragment, type ReactNode } from "react";
 
 export default function DexPage({
   children,
@@ -14,21 +13,17 @@ export default function DexPage({
   isLoading?: boolean;
 }) {
   if (!hideSearchButton) {
-    inputs[0] = (inputs[0] ?? []).concat(
-      <Button custom_id="search" emoji={{ name: "🔍" }} style="Secondary" />
-    );
+    inputs[0] = (inputs[0] ?? []).concat(<Button custom_id="search" emoji={{ name: "🔍" }} style="Secondary" />);
   }
 
   return (
     <Container>
       {children}
       {inputs.length > 0 && <Separator />}
-      {inputs.map((i, idx) => (
-        <ActionRow key={idx}>
-          {(Array.isArray(i) ? i : [i]).map((c, i) => (
-            <Fragment key={i}>
-              {isLoading ? { ...c, props: { ...c.props, disabled: true } } : c}
-            </Fragment>
+      {inputs.map((input, i) => (
+        <ActionRow key={i.toString()}>
+          {(Array.isArray(input) ? input : [input]).map((c, j) => (
+            <Fragment key={j.toString()}>{isLoading ? { ...c, props: { ...c.props, disabled: true } } : c}</Fragment>
           ))}
         </ActionRow>
       ))}

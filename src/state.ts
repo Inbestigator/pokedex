@@ -1,4 +1,4 @@
-import { searchTypes } from "./pages/search";
+import type { searchTypes } from "./pages/search";
 
 interface DataState {
   type: "p";
@@ -19,8 +19,8 @@ interface SearchState {
 export type State<T extends "p" | "l" | "s" = "p" | "l" | "s"> = T extends "p"
   ? DataState
   : T extends "l"
-  ? ListState
-  : SearchState;
+    ? ListState
+    : SearchState;
 
 export type History = State[];
 
@@ -90,13 +90,14 @@ function decodeState(encoded: string): State {
       return { type, id: num };
     case "l":
       return { type, offset: num };
-    case "s":
+    case "s": {
       const [searchType, ...query] = hex;
       return {
         type,
         query: query.join(""),
         searchType: Number(searchType) ? "pokemon" : "species",
       };
+    }
   }
 
   throw new Error(`Invalid state type: ${type}`);

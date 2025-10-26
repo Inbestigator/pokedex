@@ -1,15 +1,15 @@
-import { CommandOption, type CommandAutocompleteInteraction, type CommandConfig } from "dressed";
-import { PokemonList } from "../pages/list";
 import type { CommandInteraction } from "@dressed/react";
-import { search } from "../search";
+import { type CommandAutocompleteInteraction, type CommandConfig, CommandOption } from "dressed";
 import { format, pokedex } from "../client";
+import { PokemonList } from "../pages/list";
 import { PokemonPage } from "../pages/pokemon";
+import { search } from "../search";
 
-export const config: CommandConfig = {
+export const config = {
   description: "Displays information about Pokémon.",
   options: [
     CommandOption({
-      type: "Number",
+      type: "Integer",
       name: "pokemon",
       description: "Start on a specific pokemon page",
       autocomplete: true,
@@ -17,24 +17,24 @@ export const config: CommandConfig = {
       max_value: 1302,
     }),
   ],
-};
+} satisfies CommandConfig;
 
 export async function autocomplete(interaction: CommandAutocompleteInteraction) {
-  const query = interaction.getOption("pokemon")?.number();
+  const query = interaction.getOption("pokemon")?.integer();
   if (!query) return interaction.sendChoices([]);
   await interaction.sendChoices(
     await Promise.all(
       search(String(query), "species").map(async (name) => {
         const pokemon = await pokedex.pokemon.getPokemonSpeciesByName(name.item);
         return { name: format(pokemon.name), value: pokemon.id };
-      })
-    )
+      }),
+    ),
   );
 }
 
-export default async function dex(interaction: CommandInteraction) {
+export default async function dex(interaction: CommandInteraction<typeof config>) {
   await interaction.deferReply({ ephemeral: true });
-  const id = interaction.getOption("pokemon")?.number();
+  const id = interaction.getOption("pokemon")?.integer();
   if (id) {
     const res = PokemonPage({
       id,

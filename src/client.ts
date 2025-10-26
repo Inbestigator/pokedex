@@ -17,7 +17,7 @@ const lengthUnits = ["dm", "ft"] as const;
 export function convert<T extends (typeof weightUnits)[number] | (typeof lengthUnits)[number]>(
   input: number,
   from: T,
-  to: T
+  to: T,
 ): number {
   const weightConversion = { hg: 1, lb: 0.220462 } as Record<T, number>;
   const lengthConversion = { dm: 1, ft: 0.328084 } as Record<T, number>;
@@ -48,5 +48,5 @@ export function namedToData(data: NamedAPIResource) {
 }
 
 export function urlToId(url: string): number {
-  return parseInt(url.split("/").slice(-2)[0]!);
+  return parseInt(url.split("/").slice(-2)[0] ?? "0", 10);
 }

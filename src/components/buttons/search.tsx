@@ -1,10 +1,4 @@
-import {
-  Label,
-  SelectMenu,
-  SelectMenuOption,
-  TextInput,
-  type MessageComponentInteraction,
-} from "@dressed/react";
+import { Label, type MessageComponentInteraction, SelectMenu, SelectMenuOption, TextInput } from "@dressed/react";
 import { searchTypes } from "../../pages/search";
 
 export const pattern = `search{-:type(${searchTypes.join("|")})::query}`;
@@ -14,7 +8,7 @@ export default async function search(
   args: { prev: string } & (
     | { type: (typeof searchTypes)[number]; query: string }
     | { type: undefined; query: undefined }
-  )
+  ),
 ) {
   return interaction.showModal(
     <>
@@ -37,6 +31,6 @@ export default async function search(
     {
       title: args.query ? "Edit search" : "Search",
       custom_id: "search",
-    }
+    },
   );
 }

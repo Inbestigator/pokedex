@@ -1,10 +1,10 @@
 import { Button } from "@dressed/react";
+import { format, pokedex } from "../client";
+import { pokemonImage } from "../images";
+import { search } from "../search";
 import { ps, type State } from "../state";
 import DexPage from "./dex";
-import { format, pokedex } from "../client";
-import { search } from "../search";
-import { SectionList, type Option } from "./list";
-import { pokemonImage } from "../images";
+import { type Option, SectionList } from "./list";
 
 export const searchTypes = ["pokemon", "species"] as const;
 
@@ -15,6 +15,7 @@ export function SearchDisplay({ state, options }: { state: State<"s">; options: 
       inputs={[
         [
           <Button
+            key="edit-search"
             custom_id={ps`search-${state.searchType}:${state.query}`}
             emoji={{ name: "🔍" }}
             label="Edit search"
@@ -29,13 +30,7 @@ export function SearchDisplay({ state, options }: { state: State<"s">; options: 
   );
 }
 
-export default async function* SearchPage({
-  query,
-  type,
-}: {
-  type: (typeof searchTypes)[number];
-  query: string;
-}) {
+export default async function* SearchPage({ query, type }: { type: (typeof searchTypes)[number]; query: string }) {
   const names = search(query, type);
   const options: Option[] = [];
   yield <SearchDisplay options={options} state={{ type: "s", query, searchType: type }} />;
