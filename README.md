@@ -53,7 +53,7 @@ If you aren't using VSCode, Cloudflared is a good cli option.
 bunx cloudflared tunnel --url=localhost:3000
 ```
 
-You can try editing a page by modifying `src/pages/list.ts`.
+You can try editing a page by modifying `src/pages/list.tsx`.
 
 ## Deploying
 

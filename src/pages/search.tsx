@@ -16,7 +16,7 @@ export function SearchDisplay({ state, options }: { state: State<"s">; options: 
         [
           <Button
             key="edit-search"
-            custom_id={ps`search-${state.searchType}:${state.query}`}
+            custom_id={ps`search-${state.searchType}-${state.query}`}
             emoji={{ name: "🔍" }}
             label="Edit search"
             style="Secondary"

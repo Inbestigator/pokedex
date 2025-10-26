@@ -7,7 +7,7 @@ import { ps } from "../../state";
 
 export const pattern = ps`page-${""}-${"state:"}`;
 
-export default async function page(interaction: MessageComponentInteraction, args: Params<"page-:prev-:state">) {
+export default async function pageButton(interaction: MessageComponentInteraction, args: Params<"page-:prev-:state">) {
   await interaction.deferUpdate();
   const state = ps(args.state, true);
   const history = ps(args.prev);

@@ -32,7 +32,7 @@ export async function autocomplete(interaction: CommandAutocompleteInteraction) 
   );
 }
 
-export default async function dex(interaction: CommandInteraction<typeof config>) {
+export default async function dexCommand(interaction: CommandInteraction<typeof config>) {
   await interaction.deferReply({ ephemeral: true });
   const id = interaction.getOption("pokemon")?.integer();
   if (id) {

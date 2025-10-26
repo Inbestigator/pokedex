@@ -1,15 +1,10 @@
+import type { Params } from "@dressed/matcher";
 import { Label, type MessageComponentInteraction, SelectMenu, SelectMenuOption, TextInput } from "@dressed/react";
 import { searchTypes } from "../../pages/search";
 
-export const pattern = `search{-:type(${searchTypes.join("|")})::query}`;
+export const pattern = "search{-:type(pokemon|species)-:query}";
 
-export default async function search(
-  interaction: MessageComponentInteraction,
-  args: { prev: string } & (
-    | { type: (typeof searchTypes)[number]; query: string }
-    | { type: undefined; query: undefined }
-  ),
-) {
+export default async function searchButton(interaction: MessageComponentInteraction, args: Params<typeof pattern>) {
   return interaction.showModal(
     <>
       <Label label="Query">
