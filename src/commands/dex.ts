@@ -40,7 +40,7 @@ export default async function dexCommand(interaction: CommandInteraction<typeof 
       id,
       type: "p",
       history: [
-        { type: "l", offset: 0 },
+        { type: "l", offset: (Math.ceil(id / 5) - 1) * 5 },
         { type: "p", id },
       ],
     });

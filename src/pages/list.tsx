@@ -50,14 +50,29 @@ export async function PokemonList({ history, ...state }: State<"l"> & { history:
   );
 }
 
-export function SectionList({ history, options }: { options: Option[]; history: History }) {
+export function SectionList({
+  history,
+  options,
+  disabled,
+}: {
+  options: Option[];
+  history: History;
+  disabled?: boolean;
+}) {
   return options.map(({ id, image, name }) => (
     <Fragment key={name}>
       <MediaGallery>
         <MediaGalleryItem media={image} />
       </MediaGallery>
       <Section
-        accessory={<Button custom_id={ps`page-${history}-${{ type: "p", id }}`} label="Info" style="Secondary" />}
+        accessory={
+          <Button
+            custom_id={ps`page-${history}-${{ type: "p", id }}`}
+            label="Info"
+            style="Secondary"
+            disabled={disabled}
+          />
+        }
       >
         <TextDisplay>### {name}</TextDisplay>
       </Section>

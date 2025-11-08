@@ -4,8 +4,5 @@ import type { ServerConfig } from "dressed/server";
 export default {
   build: { extensions: ["tsx", "ts"] },
   port: 3000,
-  middleware: {
-    commands: (i) => [patchInteraction(i)],
-    components: (i, a) => [patchInteraction(i), a],
-  },
+  middleware: { commands: (i) => [patchInteraction(i)], components: (i, a) => [patchInteraction(i), a] },
 } satisfies ServerConfig;

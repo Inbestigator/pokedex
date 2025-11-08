@@ -8,7 +8,15 @@ import { type Option, SectionList } from "./list";
 
 export const searchTypes = ["pokemon", "species"] as const;
 
-export function SearchDisplay({ state, options }: { state: State<"s">; options: Option[] }) {
+export function SearchDisplay({
+  state,
+  options,
+  isLoading,
+}: {
+  state: State<"s">;
+  options: Option[];
+  isLoading?: boolean;
+}) {
   return (
     <DexPage
       hideSearchButton
@@ -23,9 +31,10 @@ export function SearchDisplay({ state, options }: { state: State<"s">; options: 
           />,
         ],
       ]}
+      isLoading={isLoading}
     >
       ## Results for '{state.query}'
-      <SectionList history={[state]} options={options} />
+      <SectionList history={[state]} options={options} disabled={isLoading} />
     </DexPage>
   );
 }
@@ -33,7 +42,7 @@ export function SearchDisplay({ state, options }: { state: State<"s">; options: 
 export default async function* SearchPage({ query, type }: { type: (typeof searchTypes)[number]; query: string }) {
   const names = search(query, type);
   const options: Option[] = [];
-  yield <SearchDisplay options={options} state={{ type: "s", query, searchType: type }} />;
+  yield <SearchDisplay options={options} state={{ type: "s", query, searchType: type }} isLoading />;
   for (const name of names) {
     const pokemon = await pokedex.pokemon.getPokemonByName(name.item);
     options.push({
@@ -41,6 +50,12 @@ export default async function* SearchPage({ query, type }: { type: (typeof searc
       name: format(pokemon.name),
       image: pokemonImage(pokemon.id, "small"),
     });
-    yield <SearchDisplay options={options} state={{ type: "s", query, searchType: type }} />;
+    yield (
+      <SearchDisplay
+        options={options}
+        state={{ type: "s", query, searchType: type }}
+        isLoading={options.length < names.length}
+      />
+    );
   }
 }
