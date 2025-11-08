@@ -2,11 +2,11 @@ import { copyFileSync, watch } from "node:fs";
 import { resolve } from "node:path";
 import { parseCommands, parseComponents, parseEvents } from "dressed/build";
 import { createServer } from "dressed/server";
-import config from "./dressed.config.ts";
-import { crawlDir } from "./node_modules/dressed/dist/utils/build.js";
+import { serverConfig } from "dressed/utils";
+import config from "./dressed.config";
+import { crawlDir } from "./node_modules/dressed/dist/utils/build";
 
-// @ts-expect-error
-globalThis.DRESSED_CONFIG = config;
+Object.assign(serverConfig, config);
 
 const files = await Promise.all(
   ["commands", "components", "events"].map(async (d) =>
